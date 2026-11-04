@@ -1,89 +1,189 @@
-# Clasificador de conversaciones de clientes
+# Clasificador de Interacciones de Clientes de Telecomunicaciones
 
-## Descripción
-
-Proyecto de Machine Learning para clasificar conversaciones de clientes de telecomunicaciones según el tema de atención identificado.
-
-El sistema utiliza procesamiento de texto y clasificación supervisada para asignar cada conversación a una de las categorías disponibles.
+Proyecto de Machine Learning y Procesamiento de Lenguaje Natural (NLP) para clasificar automáticamente mensajes de clientes de telecomunicaciones según la intención de su solicitud.
 
 ## Objetivo
 
-Automatizar la identificación del tema principal de una conversación y utilizar un nivel de confianza para determinar cuándo una predicción debe ser revisada por una persona.
+Desarrollar un modelo de clasificación de texto que identifique la categoría de una interacción y facilite la organización de solicitudes de atención al cliente.
 
-## Categorías
+El proyecto incluye exploración de datos, procesamiento de texto, entrenamiento y evaluación de modelos, implementación de predicciones y exposición del modelo mediante una API REST.
 
-El modelo clasifica las conversaciones en 10 categorías:
+## Tecnologías utilizadas
 
-- Add New Line
-- Cancel Service
-- Change Plans
-- Data Usage
-- Deactivate
-- High Bill
-- Others
-- Poor Connectivity
+- **Python:** lenguaje principal.
+- **Pandas:** exploración y manipulación de datos.
+- **Scikit-learn:** procesamiento de texto y Machine Learning.
+- **TF-IDF:** representación numérica del texto.
+- **Regresión Logística:** algoritmo de clasificación seleccionado.
+- **FastAPI:** desarrollo de la API REST.
+- **Joblib:** serialización y carga del modelo.
+- **Pytest:** pruebas automatizadas.
+- **Jupyter Notebook:** experimentación y documentación del proceso.
+
+## Dataset
+
+Se utilizó un conjunto de datos público de Kaggle con 103 registros de interacciones de clientes.
+
+El conjunto contiene información sobre los mensajes y las categorías asignadas por los agentes.
+
+**Variable de entrada:** `CustomerInteractionRawText`
+
+**Variable objetivo:** `AgentAssignedTopic`
+
+El modelo trabaja con 10 categorías:
+
 - Port Out
+- Poor Connectivity
+- High Bill
 - Roaming Plans
+- Add New Line
+- Deactivate
+- Change Plans
+- Cancel Service
+- Data Usage
+- Others
 
-## Modelo
+## Metodología
 
-Se evaluaron diferentes algoritmos de clasificación y configuraciones de procesamiento de texto.
-
-El modelo seleccionado utiliza:
-
-- TF-IDF
-- Regresión Logística
-- N-gramas
-- Validación cruzada estratificada
-
-El modelo final se guarda en:
-
-`models/modelo_clasificacion_conversaciones.joblib`
+1. **Exploración de datos:** análisis de estructura, distribución de categorías, valores faltantes y características del texto.
+2. **Procesamiento de texto:** transformación de los mensajes mediante TF-IDF.
+3. **Entrenamiento:** comparación de modelos de clasificación, incluyendo Regresión Logística, SVM y Naive Bayes.
+4. **Evaluación:** validación cruzada estratificada y análisis de Accuracy y Macro F1.
+5. **Implementación:** reutilización del pipeline entrenado para clasificar nuevas interacciones.
+6. **Exposición del modelo:** creación de una API REST con FastAPI.
+7. **Pruebas:** validación de endpoints, entradas y respuestas mediante Pytest.
 
 ## Resultados
 
-El modelo base obtuvo mediante validación cruzada:
+El modelo seleccionado fue Regresión Logística con TF-IDF utilizando unigramas y `C = 1.0`.
 
-- Accuracy: 81.54%
-- Macro F1: 77.40%
+| Métrica | Resultado |
+|---|---:|
+| Accuracy en conjunto de prueba | 66.67 % |
+| Macro F1 en conjunto de prueba | 0.6533 |
+| Accuracy media en validación cruzada | 82.21 % |
+| Macro F1 media en validación cruzada | 0.7905 |
 
-En la evaluación sobre el conjunto de prueba:
+Los resultados de validación cruzada son exploratorios y deben interpretarse con cautela debido al tamaño reducido del dataset y al proceso de selección de modelos.
 
-- Accuracy: 66.67%
-- Macro F1: 65.33%
+## Estructura del proyecto
 
-## Supervisión
+```text
+clasificador-de-mensajes/
+│
+├── data/
+│   └── CustomerInteractionData.csv
+│
+├── models/
+│   ├── modelo_clasificacion.pkl
+│   └── modelo_clasificacion_conversaciones.joblib
+│
+├── notebooks/
+│   ├── 01_procesamiento_datos.ipynb
+│   ├── 02_desarrollo_modelos_cv (1).ipynb
+│   └── 03_implementacion_modelo.ipynb
+│
+├── src/
+│   ├── __init__.py
+│   ├── api.py
+│   ├── app.py
+│   └── predictor.py
+│
+├── tests/
+│   └── test_api.py
+│
+└── .gitignore
+```
 
-Se establecieron reglas para identificar situaciones que requieren atención:
+## Instalación y ejecución
 
-- Accuracy inferior al 60%
-- Más del 50% de predicciones con baja confianza
-- Tasa de error superior al 40%
-
-También se utiliza un umbral de confianza del 20% en la aplicación.
-
-Las predicciones con confianza inferior al 20% se marcan para revisión humana.
-
-## Reentrenamiento
-
-Se realizó una simulación de reentrenamiento utilizando conversaciones revisadas y corregidas manualmente.
-
-El modelo reentrenado obtuvo:
-
-- Accuracy CV: 73.99%
-- Macro F1 CV: 71.94%
-
-El modelo reentrenado no superó al modelo base, por lo que se decidió mantener el modelo base y continuar recopilando datos revisados.
-
-## Implementación
-
-La aplicación permite ingresar una conversación y obtener:
-
-- Categoría predicha
-- Nivel de confianza
-- Indicación de si requiere revisión humana
-
-Para ejecutar la aplicación:
+### 1. Clonar el repositorio
 
 ```bash
-python src/app.py
+git clone URL_DEL_REPOSITORIO
+cd clasificador-de-mensajes
+```
+
+### 2. Crear y activar un entorno virtual
+
+En Windows:
+
+```powershell
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+### 3. Instalar dependencias
+
+```bash
+pip install pandas scikit-learn joblib fastapi uvicorn pytest httpx
+```
+
+### 4. Ejecutar la aplicación de consola
+
+```bash
+python -m src.app
+```
+
+### 5. Iniciar la API
+
+```bash
+uvicorn src.api:app --reload
+```
+
+La API estará disponible en:
+
+- API: `http://127.0.0.1:8000`
+- Documentación interactiva: `http://127.0.0.1:8000/docs`
+- Estado del servicio: `http://127.0.0.1:8000/health`
+
+### 6. Ejecutar las pruebas
+
+```bash
+python -m pytest -v
+```
+
+**Resultado actual:** 4 pruebas automatizadas aprobadas.
+
+## Ejemplo de uso de la API
+
+**Solicitud:**
+
+```json
+{
+  "message": "My internet connection keeps dropping."
+}
+```
+
+**Respuesta ilustrativa:**
+
+```json
+{
+  "category": "Poor Connectivity",
+  "confidence": 0.XX,
+  "reviewStatus": "clasificacion_automatica"
+}
+```
+
+La confianza de esta respuesta es ilustrativa; el valor real depende de la predicción.
+
+## Limitaciones
+
+- El dataset contiene únicamente 103 registros.
+- El modelo puede confundir categorías con intenciones similares.
+- Las probabilidades de clasificación no están calibradas.
+- El modelo está diseñado para mensajes en inglés.
+- Las predicciones deben revisarse en escenarios donde una clasificación incorrecta pueda afectar la atención al cliente.
+
+## Próximas mejoras
+
+- Ampliar el conjunto de datos con más interacciones.
+- Evaluar técnicas adicionales de NLP.
+- Incorporar calibración de probabilidades.
+- Mejorar la detección de mensajes que requieren revisión humana.
+- Ampliar las pruebas automatizadas.
+- Explorar el despliegue de la API en un entorno de producción.
+
+---
+
+**Proyecto desarrollado como ejercicio de aplicación de Machine Learning, NLP y desarrollo de APIs con Python.**
