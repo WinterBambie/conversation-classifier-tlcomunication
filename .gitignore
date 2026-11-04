@@ -1,7 +1,19 @@
+# Entornos virtuales
 .venv/
+.venv-1/
+venv/
+
+# Python
 __pycache__/
 *.py[cod]
-.ipynb_checkpoints/
-.env
 
-data/
+# Jupyter
+.ipynb_checkpoints/
+
+# Variables de entorno
+.env
+.env.*
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db

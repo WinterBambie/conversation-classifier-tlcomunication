@@ -6,13 +6,13 @@ def main():
 
     mensaje = input("\nEscribe la conversación: ")
 
-    categoria, confianza = clasificar_mensaje(mensaje)
+    resultado = clasificar_mensaje(mensaje)
 
     print("\nResultado:")
-    print(f"Tema: {categoria}")
-    print(f"Confianza: {confianza:.2%}")
+    print(f"Tema: {resultado['categoria']}")
+    print(f"Confianza: {resultado['confianza']:.2%}")
 
-    if confianza < 0.20:
+    if resultado["requiere_revision"]:
         print("Requiere revisión humana")
     else:
         print("Predicción aceptada")
