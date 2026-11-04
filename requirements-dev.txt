@@ -1,3 +1,10 @@
 -r requirements.txt
+
 pytest==9.2.0
 httpx==0.28.1
+
+# Analisis y notebooks
+pandas==3.0.5
+matplotlib==3.11.1
+seaborn==0.13.2
+notebook==7.6.2
