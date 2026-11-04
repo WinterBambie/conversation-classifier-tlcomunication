@@ -1,7 +1,5 @@
-import joblib
+from src.predictor import clasificar_mensaje
 
-from predictor import clasificar_mensaje
-modelo = joblib.load("../models/modelo_clasificacion_conversaciones.joblib")
 
 def main():
     print("=== Clasificador de conversaciones ===")
@@ -15,9 +13,9 @@ def main():
     print(f"Confianza: {confianza:.2%}")
 
     if confianza < 0.20:
-        print("⚠️ Requiere revisión humana")
+        print("Requiere revisión humana")
     else:
-        print("✅ Predicción aceptada")
+        print("Predicción aceptada")
 
 
 if __name__ == "__main__":
