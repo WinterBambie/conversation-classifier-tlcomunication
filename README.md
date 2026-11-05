@@ -1,36 +1,61 @@
-# Clasificador de Interacciones de Clientes de Telecomunicaciones
+﻿# Telecom Message Classifier
 
-Proyecto de Machine Learning y Procesamiento de Lenguaje Natural (NLP) para clasificar automáticamente mensajes de clientes de telecomunicaciones según la intención de su solicitud.
+A full-stack application for classifying customer interactions in the telecommunications domain using Machine Learning and Natural Language Processing (NLP).
 
-## Objetivo
+The system combines a React and TypeScript frontend, a Java Spring Boot REST API, and a Python FastAPI machine learning service to process customer messages and predict their corresponding categories.
 
-Desarrollar un modelo de clasificación de texto que identifique la categoría de una interacción y facilite la organización de solicitudes de atención al cliente.
+## Architecture
 
-El proyecto incluye exploración de datos, procesamiento de texto, entrenamiento y evaluación de modelos, implementación de predicciones y exposición del modelo mediante una API REST.
+The application follows a modular architecture that separates the user interface, API orchestration, and machine learning inference.
 
-## Tecnologías utilizadas
+**Classification flow:**
 
-- **Python:** lenguaje principal.
-- **Pandas:** exploración y manipulación de datos.
-- **Scikit-learn:** procesamiento de texto y Machine Learning.
-- **TF-IDF:** representación numérica del texto.
-- **Regresión Logística:** algoritmo de clasificación seleccionado.
-- **FastAPI:** desarrollo de la API REST.
-- **Joblib:** serialización y carga del modelo.
-- **Pytest:** pruebas automatizadas.
-- **Jupyter Notebook:** experimentación y documentación del proceso.
+1. The user submits a customer message through the React frontend.
+2. The frontend sends the request to the Java Spring Boot API.
+3. Spring Boot forwards the message to the Python FastAPI service.
+4. The Python service loads the trained model and generates a prediction.
+5. The classification result is returned through Spring Boot to the frontend.
 
-## Dataset
+```text
+React + TypeScript
+       |
+       v
+Java Spring Boot REST API
+       |
+       v
+Python FastAPI
+       |
+       v
+TF-IDF + Logistic Regression
+       |
+       v
+Classification Result
+```
 
-Se utilizó un conjunto de datos público de Kaggle con 103 registros de interacciones de clientes.
+## Technologies
 
-El conjunto contiene información sobre los mensajes y las categorías asignadas por los agentes.
+| Component | Technologies |
+|---|---|
+| Frontend | React, TypeScript, Vite, Tailwind CSS |
+| Shared package | TypeScript, React Query |
+| Backend API | Java 17, Spring Boot 4 |
+| Machine Learning API | Python, FastAPI, Pydantic |
+| Machine Learning | Scikit-learn, TF-IDF, Logistic Regression |
+| Data processing | Pandas, NumPy |
+| Model serialization | Joblib |
+| Testing | Pytest, JUnit, Spring Boot Test |
+| Package management | pnpm workspaces |
+| Build tools | Maven, Vite |
 
-**Variable de entrada:** `CustomerInteractionRawText`
+## Machine Learning Model
 
-**Variable objetivo:** `AgentAssignedTopic`
+The classification model was developed using a public Kaggle dataset containing 103 customer interaction records.
 
-El modelo trabaja con 10 categorías:
+**Input variable:** `CustomerInteractionRawText`
+
+**Target variable:** `AgentAssignedTopic`
+
+The model classifies messages into ten categories:
 
 - Port Out
 - Poor Connectivity
@@ -43,111 +68,132 @@ El modelo trabaja con 10 categorías:
 - Data Usage
 - Others
 
-## Metodología
+### Methodology
 
-1. **Exploración de datos:** análisis de estructura, distribución de categorías, valores faltantes y características del texto.
-2. **Procesamiento de texto:** transformación de los mensajes mediante TF-IDF.
-3. **Entrenamiento:** comparación de modelos de clasificación, incluyendo Regresión Logística, SVM y Naive Bayes.
-4. **Evaluación:** validación cruzada estratificada y análisis de Accuracy y Macro F1.
-5. **Implementación:** reutilización del pipeline entrenado para clasificar nuevas interacciones.
-6. **Exposición del modelo:** creación de una API REST con FastAPI.
-7. **Pruebas:** validación de endpoints, entradas y respuestas mediante Pytest.
+1. Exploratory data analysis and category distribution analysis.
+2. Text preprocessing and TF-IDF vectorization.
+3. Comparison of Logistic Regression, Support Vector Machines (SVM), and Naive Bayes.
+4. Stratified cross-validation.
+5. Model evaluation using Accuracy and Macro F1.
+6. Model serialization and API integration.
 
-## Resultados
+### Model performance
 
-El modelo seleccionado fue Regresión Logística con TF-IDF utilizando unigramas y `C = 1.0`.
+The selected model uses TF-IDF with unigrams and Logistic Regression (`C = 1.0`).
 
-| Métrica | Resultado |
+| Metric | Result |
 |---|---:|
-| Accuracy en conjunto de prueba | 66.67 % |
-| Macro F1 en conjunto de prueba | 0.6533 |
-| Accuracy media en validación cruzada | 82.21 % |
-| Macro F1 media en validación cruzada | 0.7905 |
+| Test Accuracy | 66.67% |
+| Test Macro F1 | 0.6533 |
+| Cross-validation Accuracy | 82.21% |
+| Cross-validation Macro F1 | 0.7905 |
 
-Los resultados de validación cruzada son exploratorios y deben interpretarse con cautela debido al tamaño reducido del dataset y al proceso de selección de modelos.
+Cross-validation results are exploratory and should be interpreted cautiously due to the small dataset and model selection process.
 
-## Estructura del proyecto
+## Project Structure
 
 ```text
-clasificador-de-mensajes/
-│
-├── data/
-│   └── CustomerInteractionData.csv
-│
-├── models/
-│   ├── modelo_clasificacion.pkl
-│   └── modelo_clasificacion_conversaciones.joblib
-│
-├── notebooks/
-│   ├── 01_procesamiento_datos.ipynb
-│   ├── 02_desarrollo_modelos_cv (1).ipynb
-│   └── 03_implementacion_modelo.ipynb
-│
-├── src/
-│   ├── __init__.py
-│   ├── api.py
-│   ├── app.py
-│   └── predictor.py
-│
-├── tests/
-│   └── test_api.py
-│
-└── .gitignore
+telecom-message-classifier/
+â”‚
+â”œâ”€â”€ frontend/                 # React + TypeScript application
+â”‚   â”œâ”€â”€ public/
+â”‚   â””â”€â”€ src/
+â”‚
+â”œâ”€â”€ backend-java/             # Spring Boot REST API
+â”‚   â”œâ”€â”€ src/
+â”‚   â”œâ”€â”€ .mvn/
+â”‚   â””â”€â”€ pom.xml
+â”‚
+â”œâ”€â”€ ml-service/               # Python machine learning service
+â”‚   â”œâ”€â”€ data/
+â”‚   â”œâ”€â”€ models/
+â”‚   â”œâ”€â”€ notebooks/
+â”‚   â”œâ”€â”€ src/
+â”‚   â”œâ”€â”€ tests/
+â”‚   â””â”€â”€ requirements.txt
+â”‚
+â”œâ”€â”€ packages/
+â”‚   â””â”€â”€ api-client-react/     # Shared frontend API client
+â”‚
+â”œâ”€â”€ docs/
+â”‚
+â”œâ”€â”€ pnpm-workspace.yaml
+â”œâ”€â”€ pnpm-lock.yaml
+â””â”€â”€ README.md
 ```
 
-## Instalación y ejecución
+## Prerequisites
 
-### 1. Clonar el repositorio
+- Node.js 22 or compatible version.
+- pnpm 10.
+- Java 17.
+- Python 3.12.
+- Git.
+
+## Local Installation and Execution
+
+Clone the repository:
 
 ```bash
-git clone URL_DEL_REPOSITORIO
-cd clasificador-de-mensajes
+git clone <REPOSITORY_URL>
+cd telecom-message-classifier
 ```
 
-### 2. Crear y activar un entorno virtual
+### 1. Python Machine Learning Service
 
-En Windows:
+Open a terminal:
 
 ```powershell
-python -m venv .venv
-.venv\Scripts\activate
+cd ml-service
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+uvicorn src.api:app --reload --host 127.0.0.1 --port 8000
 ```
 
-### 3. Instalar dependencias
+The service will be available at:
 
-```bash
-pip install pandas scikit-learn joblib fastapi uvicorn pytest httpx
+- API documentation: `http://127.0.0.1:8000/docs`
+- Health check: `http://127.0.0.1:8000/health`
+
+### 2. Java Backend
+
+Open another terminal from the repository root:
+
+```powershell
+cd backend-java
+$env:CLASSIFIER_PROVIDER = "python-api"
+$env:PYTHON_CLASSIFIER_URL = "http://localhost:8000"
+.\mvnw.cmd spring-boot:run
 ```
 
-### 4. Ejecutar la aplicación de consola
+The backend will run at `http://localhost:8080`.
 
-```bash
-python -m src.app
+### 3. React Frontend
+
+Open another terminal from the repository root:
+
+```powershell
+npx pnpm@10 install
+npx pnpm@10 --filter @workspace/telecom-message-classifier dev
 ```
 
-### 5. Iniciar la API
+The frontend will be available at:
 
-```bash
-uvicorn src.api:app --reload
-```
+`http://localhost:5173`
 
-La API estará disponible en:
+Vite proxies `/api` requests to the Spring Boot backend.
 
-- API: `http://127.0.0.1:8000`
-- Documentación interactiva: `http://127.0.0.1:8000/docs`
-- Estado del servicio: `http://127.0.0.1:8000/health`
+## API Endpoints
 
-### 6. Ejecutar las pruebas
+### Java Spring Boot API
 
-```bash
-python -m pytest -v
-```
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/health` | Backend health check |
+| POST | `/api/conversations/classify` | Classify a customer message |
 
-**Resultado actual:** 4 pruebas automatizadas aprobadas.
-
-## Ejemplo de uso de la API
-
-**Solicitud:**
+Example request:
 
 ```json
 {
@@ -155,35 +201,68 @@ python -m pytest -v
 }
 ```
 
-**Respuesta ilustrativa:**
+The classification response includes:
 
-```json
-{
-  "category": "Poor Connectivity",
-  "confidence": 0.XX,
-  "reviewStatus": "clasificacion_automatica"
-}
+- `category`: predicted message category.
+- `confidence`: model confidence score.
+- `reviewStatus`: classification review status.
+- `classifierMode`: classifier execution mode.
+- `modelNotice`: information about the prediction source.
+
+### Python FastAPI Service
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/health` | Machine learning service health check |
+| POST | `/predict` | Generate a model prediction |
+
+Interactive documentation is available at `/docs`.
+
+## Testing
+
+### Frontend
+
+Run type checking and production build from the repository root:
+
+```powershell
+npx pnpm@10 --filter @workspace/telecom-message-classifier typecheck
+npx pnpm@10 --filter @workspace/telecom-message-classifier build
 ```
 
-La confianza de esta respuesta es ilustrativa; el valor real depende de la predicción.
+### Java Backend
 
-## Limitaciones
+```powershell
+cd backend-java
+.\mvnw.cmd test
+```
 
-- El dataset contiene únicamente 103 registros.
-- El modelo puede confundir categorías con intenciones similares.
-- Las probabilidades de clasificación no están calibradas.
-- El modelo está diseñado para mensajes en inglés.
-- Las predicciones deben revisarse en escenarios donde una clasificación incorrecta pueda afectar la atención al cliente.
+### Python Service
 
-## Próximas mejoras
+```powershell
+cd ml-service
+python -m pytest -v
+```
 
-- Ampliar el conjunto de datos con más interacciones.
-- Evaluar técnicas adicionales de NLP.
-- Incorporar calibración de probabilidades.
-- Mejorar la detección de mensajes que requieren revisión humana.
-- Ampliar las pruebas automatizadas.
-- Explorar el despliegue de la API en un entorno de producción.
+The current Python test suite contains four automated tests. The Java backend test suite contains two tests.
 
----
+## Limitations
 
-**Proyecto desarrollado como ejercicio de aplicación de Machine Learning, NLP y desarrollo de APIs con Python.**
+- The dataset contains only 103 records.
+- Similar customer intents may be misclassified.
+- Model probabilities are not calibrated.
+- The model was trained for English-language messages.
+- The current confidence threshold for manual review is provisional.
+- Classification results should be evaluated before use in production customer support workflows.
+
+## Future Improvements
+
+- Expand the training dataset with more customer interactions.
+- Evaluate additional NLP techniques and classification algorithms.
+- Calibrate model probabilities and improve confidence thresholds.
+- Improve the detection of messages requiring manual review.
+- Expand automated integration and end-to-end testing.
+- Implement production deployment and monitoring.
+
+## Project Background
+
+This project combines Machine Learning, NLP, REST API development, and full-stack software engineering in a modular application architecture.

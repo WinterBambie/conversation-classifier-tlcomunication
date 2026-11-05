@@ -1,19 +1,33 @@
-# Entornos virtuales
+﻿# Entornos virtuales Python
 .venv/
-.venv-1/
+.venv-*/
 venv/
 
 # Python
 __pycache__/
 *.py[cod]
 
-# Jupyter
+# Pruebas y Jupyter
+.pytest_cache/
 .ipynb_checkpoints/
 
 # Variables de entorno
 .env
 .env.*
+!.env.example
 
-# Archivos del sistema
+# Node.js y frontend
+node_modules/
+dist/
+
+# Java y Maven
+target/
+
+# IDE y editores
+.idea/
+.vscode/
+
+# Logs y archivos del sistema
+*.log
 .DS_Store
 Thumbs.db
